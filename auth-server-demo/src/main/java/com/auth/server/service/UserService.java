@@ -68,13 +68,6 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    private CreateUserResponse toCreateUserResponse(UserEntity entity){
-//        return CreateUserResponse.builder()
-//                .user_id(entity.getId())
-//                .email(entity.getUsername())
-//                .build();
-//    }
-
     private UserResponseDto toUserResponseDto(CreateUserRequest userRequest){
         return new UserResponseDto().builder().email(userRequest.getEmail()).build();
     }
