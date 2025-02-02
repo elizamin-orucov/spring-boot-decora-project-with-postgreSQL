@@ -1,5 +1,6 @@
 package com.decora.service.services;
 
+import com.decora.service.dtos.response.ApiResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,10 +17,10 @@ public interface BaseCRUDService<DetailDto, ListDto, CreateDto, UpdateDto> {
 
     DetailDto detail(Long id);
 
-    String create(CreateDto dto);
+    ApiResponseDto<DetailDto> create(CreateDto dto);
 
-    String update(UpdateDto dto);
+    ApiResponseDto<UpdateDto> update(UpdateDto dto);
 
-    String delete(Long id);
+    ApiResponseDto<DetailDto> delete(Long id);
 
 }

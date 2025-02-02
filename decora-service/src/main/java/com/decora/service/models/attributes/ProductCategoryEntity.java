@@ -4,8 +4,12 @@ import com.decora.service.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "product_category")
 public class ProductCategoryEntity extends BaseEntity {
     @Column(name = "category_name")

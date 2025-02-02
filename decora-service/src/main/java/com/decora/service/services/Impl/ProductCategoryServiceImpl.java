@@ -4,11 +4,16 @@ import com.decora.service.dtos.product_category.ProductCategoryCreateDto;
 import com.decora.service.dtos.product_category.ProductCategoryDto;
 import com.decora.service.dtos.product_category.ProductCategoryListDto;
 import com.decora.service.dtos.product_category.ProductCategoryUpdateDto;
+import com.decora.service.dtos.response.ApiResponseDto;
+import com.decora.service.mappers.attributes.ProductCategoryMapper;
+import com.decora.service.models.attributes.ProductCategoryEntity;
 import com.decora.service.repositories.attributes.ProductCategoryRepository;
 import com.decora.service.services.ProductCategoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
@@ -20,26 +25,56 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public Page<ProductCategoryListDto> list(Pageable pageable) {
-        return null;
+        Page<ProductCategoryEntity> categoryEntities = categoryRepository.findAll(pageable);
+        return categoryEntities.map(ProductCategoryMapper.INSTANCE::toListDto);
     }
 
     @Override
     public ProductCategoryDto detail(Long id) {
-        return null;
+        ProductCategoryEntity entity = getProductCategoryEntity(id);
+        return ProductCategoryMapper.INSTANCE.toDto(entity);
     }
 
     @Override
-    public String create(ProductCategoryCreateDto productCategoryCreateDto) {
-        return null;
+    public ApiResponseDto<ProductCategoryDto> create(ProductCategoryCreateDto productCategoryCreateDto) {
+        ProductCategoryEntity entity = ProductCategoryMapper.INSTANCE.toEntity(productCategoryCreateDto);
+        ProductCategoryEntity savedEntity = categoryRepository.save(entity);
+
+        ProductCategoryDto responseDto = ProductCategoryMapper.INSTANCE.toDto(savedEntity);
+
+        return ApiResponseDto.<ProductCategoryDto>builder()
+                .success(true)
+                .message("category added successfully")
+                .response(responseDto)
+                .build();
     }
 
     @Override
-    public String update(ProductCategoryUpdateDto productCategoryUpdateDto) {
-        return null;
+    public ApiResponseDto<ProductCategoryUpdateDto> update(ProductCategoryUpdateDto productCategoryUpdateDto) {
+        ProductCategoryEntity entity = ProductCategoryMapper.INSTANCE.toEntity(productCategoryUpdateDto);
+        categoryRepository.save(entity);
+        return ApiResponseDto.<ProductCategoryUpdateDto>builder()
+                .success(true)
+                .message("category successfully renewed")
+                .response(productCategoryUpdateDto)
+                .build();
     }
 
     @Override
-    public String delete(Long id) {
-        return null;
+    public ApiResponseDto<ProductCategoryDto> delete(Long id) {
+        ProductCategoryEntity entity = getProductCategoryEntity(id);
+        categoryRepository.delete(entity);
+        ProductCategoryDto dto = ProductCategoryMapper.INSTANCE.toDto(entity);
+        return ApiResponseDto.<ProductCategoryDto>builder()
+                .success(true)
+                .message(String.format("category with id %d deleted", id))
+                .response(dto)
+                .build();
+    }
+
+    private ProductCategoryEntity getProductCategoryEntity(Long id){
+        Optional<ProductCategoryEntity> entityOptional =
+                categoryRepository.findById(id);
+        return entityOptional.orElse(null);
     }
 }
