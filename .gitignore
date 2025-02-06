@@ -35,7 +35,7 @@ build/
 auth-server
 
 ### logs file
-logs
+logs/
 
 ### Docker
 docker-compose.yml
