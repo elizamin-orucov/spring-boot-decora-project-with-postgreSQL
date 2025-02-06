@@ -33,3 +33,9 @@ build/
 .vscode/
 
 auth-server
+
+### logs file
+logs
+
+### Docker
+docker-compose.yml

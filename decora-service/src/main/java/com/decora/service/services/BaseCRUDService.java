@@ -7,20 +7,22 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface BaseCRUDService<DetailDto, ListDto, CreateDto, UpdateDto> {
+public interface BaseCRUDService<
+        EntityDetailDto, EntityListDto, EntityCreateDto, EntityUpdateDto
+        > {
 
-    Page<ListDto> list(Pageable pageable);
+    Page<EntityListDto> list(Pageable pageable);
 
-    default List<ListDto> list(){
+    default List<EntityListDto> list(){
         return new ArrayList<>();
     };
 
-    DetailDto detail(Long id);
+    EntityDetailDto detail(Long id);
 
-    ApiResponseDto<DetailDto> create(CreateDto dto);
+    ApiResponseDto<EntityDetailDto> create(EntityCreateDto dto);
 
-    ApiResponseDto<UpdateDto> update(UpdateDto dto);
+    ApiResponseDto<EntityUpdateDto> update(EntityUpdateDto dto);
 
-    ApiResponseDto<DetailDto> delete(Long id);
+    ApiResponseDto<EntityDetailDto> delete(Long id);
 
 }

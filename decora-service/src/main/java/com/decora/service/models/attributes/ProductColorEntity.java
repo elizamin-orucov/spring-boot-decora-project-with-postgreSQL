@@ -7,9 +7,9 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Setter
 @Getter
+@Entity
 @Table(name = "product_color")
 public class ProductColorEntity extends BaseEntity {
     @Column(name = "color_name", nullable = false, unique = true)

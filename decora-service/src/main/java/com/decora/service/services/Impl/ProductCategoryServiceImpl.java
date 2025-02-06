@@ -91,7 +91,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductCategoryEntity getProductCategoryEntity(Long id) {
         log.debug("Fetching product category entity for id: {}", id);
         Optional<ProductCategoryEntity> entityOptional = categoryRepository.findById(id);
-        if (!entityOptional.isPresent()) {
+        if (entityOptional.isEmpty()) {
             log.warn("Product category entity not found for id: {}", id);
         }
         return entityOptional.orElse(null);

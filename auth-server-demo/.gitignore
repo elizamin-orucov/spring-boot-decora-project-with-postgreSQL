@@ -33,3 +33,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Docker
+server-run.sh
+server-run2.sh
