@@ -7,6 +7,7 @@ import com.decora.service.dtos.product_color.ProductColorListDto;
 import com.decora.service.dtos.product_color.ProductColorUpdateDto;
 import com.decora.service.dtos.response.ApiResponseDto;
 import com.decora.service.services.ProductColorService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,7 @@ public class ProductColorController implements BaseController<
     @Override
     @PostMapping
     public ResponseEntity<ApiResponseDto<ProductColorDto>> create(
-            @RequestBody ProductColorCreateDto productColorCreateDto
+            @Valid @RequestBody ProductColorCreateDto productColorCreateDto
     ) {
         ApiResponseDto<ProductColorDto> createNewColor = colorService.create(productColorCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createNewColor);

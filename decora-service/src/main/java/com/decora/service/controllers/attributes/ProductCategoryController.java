@@ -7,6 +7,7 @@ import com.decora.service.dtos.product_category.ProductCategoryListDto;
 import com.decora.service.dtos.product_category.ProductCategoryUpdateDto;
 import com.decora.service.dtos.response.ApiResponseDto;
 import com.decora.service.services.ProductCategoryService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class ProductCategoryController implements BaseController<
     @Override
     @PostMapping
     public ResponseEntity<ApiResponseDto<ProductCategoryDto>> create(
-            @RequestBody ProductCategoryCreateDto productCategoryCreateDto
+            @Valid @RequestBody ProductCategoryCreateDto productCategoryCreateDto
     ) {
         ApiResponseDto<ProductCategoryDto> createNewCategory = categoryService.create(productCategoryCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createNewCategory);

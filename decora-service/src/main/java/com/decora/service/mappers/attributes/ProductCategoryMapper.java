@@ -6,6 +6,7 @@ import com.decora.service.dtos.product_category.ProductCategoryListDto;
 import com.decora.service.dtos.product_category.ProductCategoryUpdateDto;
 import com.decora.service.models.attributes.ProductCategoryEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -19,6 +20,7 @@ public interface ProductCategoryMapper {
     ProductCategoryDto toDto(ProductCategoryEntity entity);
 
     // to Entity
+    @Mapping(source = "categoryName", target = "categoryName")
     ProductCategoryEntity toEntity(ProductCategoryCreateDto dto);
 
     ProductCategoryEntity toEntity(ProductCategoryUpdateDto dto);
