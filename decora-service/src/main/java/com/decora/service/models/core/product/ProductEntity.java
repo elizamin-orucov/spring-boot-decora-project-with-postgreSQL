@@ -3,6 +3,7 @@ package com.decora.service.models.core.product;
 import com.decora.service.base.BaseEntity;
 import com.decora.service.models.attributes.ProductCategoryEntity;
 import com.decora.service.models.attributes.ProductColorEntity;
+import com.decora.service.models.enums.CollectionEnum;
 import com.decora.service.models.enums.DiscountRateEnum;
 import com.decora.service.models.enums.ProductStatus;
 import jakarta.persistence.*;
@@ -54,6 +55,10 @@ public class ProductEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "discount_rate", nullable = false)
     private DiscountRateEnum discountRate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "collection", nullable = false)
+    private CollectionEnum collection;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status", nullable = false)
