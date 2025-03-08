@@ -56,9 +56,8 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "discount_rate", nullable = false)
     private DiscountRateEnum discountRate;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "collection", nullable = false)
-    private CollectionEnum collection;
+    private Integer collection;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status", nullable = false)

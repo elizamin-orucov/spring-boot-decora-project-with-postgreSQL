@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ProductImageCreateDto {
-    private Long productId;
-    private String imagePath;
+public class ProductUpdateDto extends ProductCreateDto {
+    private Long id;
 }

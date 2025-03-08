@@ -34,6 +34,8 @@ public class ProductColorController implements BaseController<
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        page = Math.abs(page);
+        size = Math.abs(size);
         Page<ProductColorListDto> listDto = colorService.list(PageRequest.of(page - 1, size));
         return ResponseEntity.status(HttpStatus.OK).body(listDto);
     }

@@ -37,6 +37,8 @@ public class ProductCategoryController implements BaseController<
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        page = Math.abs(page);
+        size = Math.abs(size);
         Page<ProductCategoryListDto> listDto = categoryService.list(PageRequest.of(page - 1, size));
         return ResponseEntity.status(HttpStatus.OK).body(listDto);
     }

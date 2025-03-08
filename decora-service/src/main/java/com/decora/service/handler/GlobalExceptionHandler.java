@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        BindingResult result = ex.getBindingResult();
-
-        for (FieldError error : result.getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
-        }
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-}
+//@ControllerAdvice
+//public class GlobalExceptionHandler {
+//
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        BindingResult result = ex.getBindingResult();
+//
+//        for (FieldError error : result.getFieldErrors()) {
+//            errors.put(error.getField(), error.getDefaultMessage());
+//        }
+//
+//        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+//    }
+//}
 
