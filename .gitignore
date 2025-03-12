@@ -39,3 +39,8 @@ logs/
 
 ### Docker
 docker-compose.yml
+
+
+
+### upload files
+uploads/

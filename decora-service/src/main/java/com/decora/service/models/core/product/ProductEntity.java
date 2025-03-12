@@ -17,23 +17,23 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 public class ProductEntity extends BaseEntity {
-    @Column(name = "product_title", nullable = false)
+    @Column(name = "product_title", nullable = true)
     private String title;
 
-    @Column(name = "product_description", nullable = false)
+    @Column(name = "product_description", nullable = true)
     private String description;
 
-    @Column(name = "product_slug", unique = true, nullable = false, updatable = false)
+    @Column(name = "product_slug", unique = true, nullable = true, updatable = false)
     private String slug;
 
-    @Column(name = "product_price", nullable = false)
+    @Column(name = "product_price", nullable = true)
     private Double price;
 
-    @Column(name = "product_size", nullable = false)
+    @Column(name = "product_size", nullable = true)
     private String size;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private ProductCategoryEntity category;
 
     @ManyToMany(
@@ -43,24 +43,24 @@ public class ProductEntity extends BaseEntity {
             }
     )
     @JoinTable(
-            name = "product_color",
+            name = "product_colors",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
     )
     private List<ProductColorEntity> colors;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ProductImageEntity> images;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "discount_rate", nullable = false)
+    @Column(name = "discount_rate", nullable = true)
     private DiscountRateEnum discountRate;
 
-    @Column(name = "collection", nullable = false)
+    @Column(name = "collection", nullable = true)
     private Integer collection;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "product_status", nullable = false)
+    @Column(name = "product_status", nullable = true)
     private ProductStatus status;
 
 }

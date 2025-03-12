@@ -19,7 +19,7 @@ public class ProductDto extends BaseIdDto {
     private String size;
     private Integer collection;
     private ProductColorListDto color;
-    private Integer discountRate;
+    private String discountRate;
     private String status;
     private List<ProductImageListDto> images;
 }

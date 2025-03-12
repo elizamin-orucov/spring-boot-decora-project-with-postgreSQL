@@ -6,7 +6,11 @@ import com.decora.service.dtos.product.ProductListDto;
 import com.decora.service.dtos.product.ProductUpdateDto;
 import com.decora.service.dtos.response.ApiResponseDto;
 import com.decora.service.mappers.core.ProductMapper;
+import com.decora.service.models.attributes.ProductCategoryEntity;
+import com.decora.service.models.attributes.ProductColorEntity;
 import com.decora.service.models.core.product.ProductEntity;
+import com.decora.service.repositories.attributes.ProductCategoryRepository;
+import com.decora.service.repositories.attributes.ProductColorRepository;
 import com.decora.service.repositories.core.ProductRepository;
 import com.decora.service.services.ProductImageService;
 import com.decora.service.services.ProductService;
@@ -30,9 +34,15 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductImageService imageService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductImageService imageService) {
+    private final ProductCategoryRepository categoryRepository;
+
+    private final ProductColorRepository colorRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository, ProductImageService imageService, ProductCategoryRepository categoryRepository, ProductColorRepository colorRepository) {
         this.productRepository = productRepository;
         this.imageService = imageService;
+        this.categoryRepository = categoryRepository;
+        this.colorRepository = colorRepository;
     }
 
     @Override
@@ -71,6 +81,13 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity productEntity = ProductMapper.INSTANCE.toEntity(productCreateDto);
 
         productEntity.setSlug(generateUniqueSlug(productEntity.getTitle()));
+
+        ProductCategoryEntity categoryEntity = categoryRepository.findById(productCreateDto.getCategoryID()).orElse(null);
+        List<ProductColorEntity> colorEntities = colorRepository.findByIdIn(productCreateDto.getColorIDS());
+
+        productEntity.setCategory(categoryEntity);
+        productEntity.setColors(colorEntities);
+
 
         ProductEntity savedEntity = productRepository.save(productEntity);
 
@@ -140,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
         String uniqueSlug = createSlug(input);
         int counter = 1;
         while (productRepository.existsBySlug(uniqueSlug)) {
-            uniqueSlug = uniqueSlug + "-" + counter;
+            uniqueSlug = input + "-" + counter;
             counter++;
         }
 
