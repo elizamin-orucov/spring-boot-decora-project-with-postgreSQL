@@ -14,6 +14,7 @@ public interface BaseController<
         > {
     ResponseEntity<Page<EntityListDto>> fetchAll(int page, int size);
     ResponseEntity<EntityDetailDto> fetchById(Long id);
+    default ResponseEntity<EntityDetailDto> fetchBySlug(Long id){return null;};
     ResponseEntity<ApiResponseDto<EntityDetailDto>> create(@Valid @RequestBody EntityCreateDto createDto);
     ResponseEntity<ApiResponseDto<EntityUpdateDto>> update(EntityUpdateDto updateDto);
     ResponseEntity<ApiResponseDto<EntityDetailDto>> delete(Long id);
