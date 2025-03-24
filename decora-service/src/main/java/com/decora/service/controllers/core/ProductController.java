@@ -44,8 +44,12 @@ public class ProductController implements BaseController<
     }
 
     @Override
-    public ResponseEntity<ProductDto> fetchById(Long id) {
-        return null;
+    @GetMapping("/{slug}")
+    public ResponseEntity<ProductDto> fetchBySlug(
+            @PathVariable String slug
+    ) {
+        ProductDto productDto = productService.detail(slug);
+        return ResponseEntity.ok(productDto);
     }
 
     @Override
@@ -64,13 +68,19 @@ public class ProductController implements BaseController<
     }
 
     @Override
-    public ResponseEntity<ApiResponseDto<ProductUpdateDto>> update(ProductUpdateDto productUpdateDto) {
-        return null;
+    @PutMapping
+    public ResponseEntity<ApiResponseDto<ProductUpdateDto>> update(
+            @ModelAttribute ProductUpdateDto productUpdateDto
+    ) {
+        ApiResponseDto<ProductUpdateDto> response = productService.update(productUpdateDto);
+        return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponseDto<ProductDto>> delete(Long id) {
-        return null;
+    @DeleteMapping
+    public ResponseEntity<ApiResponseDto<ProductDto>> delete(@RequestParam Long id) {
+        ApiResponseDto<ProductDto> response = productService.delete(id);
+        return ResponseEntity.ok(response);
     }
 
 }

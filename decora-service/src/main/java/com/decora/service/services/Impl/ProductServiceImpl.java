@@ -38,11 +38,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductColorRepository colorRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductImageService imageService, ProductCategoryRepository categoryRepository, ProductColorRepository colorRepository) {
+    private final ProductMapper productMapper;
+
+    public ProductServiceImpl(ProductRepository productRepository, ProductImageService imageService, ProductCategoryRepository categoryRepository, ProductColorRepository colorRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.imageService = imageService;
         this.categoryRepository = categoryRepository;
         this.colorRepository = colorRepository;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -55,6 +58,13 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto detail(Long id) {
         log.info("Fetching product details for id: {}", id);
         ProductEntity entity = getProductEntity(id);
+        return ProductMapper.INSTANCE.toDto(entity);
+    }
+
+    @Override
+    public ProductDto detail(String slug) {
+        log.info("Fetching product details for slug: {}", slug);
+        ProductEntity entity = getProductEntity(slug);
         return ProductMapper.INSTANCE.toDto(entity);
     }
 
@@ -88,7 +98,6 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setCategory(categoryEntity);
         productEntity.setColors(colorEntities);
 
-
         ProductEntity savedEntity = productRepository.save(productEntity);
 
         imageService.saveImages(savedEntity, images);
@@ -102,8 +111,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiResponseDto<ProductUpdateDto> update(ProductUpdateDto productUpdateDto) {
-        ProductEntity entity = ProductMapper.INSTANCE.toEntity(productUpdateDto);
-        productRepository.save(entity);
+
+
+        ProductEntity existingProduct = productRepository.findById(productUpdateDto.getId())
+                .orElseThrow(() -> new RuntimeException("Product tapılmadı"));
+
+        productMapper.updateEntityFromDto(productUpdateDto, existingProduct);
+
+        System.out.println("----------- set slug -----------------");
+        System.out.println(existingProduct.getSlug());
+        existingProduct.setSlug(generateUniqueSlug(productUpdateDto.getTitle()));
+        System.out.println(generateUniqueSlug(productUpdateDto.getTitle()));
+        System.out.println("++++++++++++++++++++++++++++++");
+        System.out.println(existingProduct.getSlug());
+        System.out.println("----------- set slug -----------------");
+
+        productRepository.save(existingProduct);
+
+
+
+//        ProductEntity entity = ProductMapper.INSTANCE.toEntity(productUpdateDto);
+//        productRepository.save(entity);
         return ApiResponseDto.<ProductUpdateDto>builder()
                 .success(true)
                 .message("updated product")
@@ -135,7 +163,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductEntity getProductEntity(Long id){
+        System.out.println("get product isleyir qaqa + id " + id);
         log.debug("Fetching product entity for id: {}", id);
+        System.out.println(id);
         Optional<ProductEntity> entityOptional = productRepository.findById(id);
         if (entityOptional.isEmpty()){
             log.warn("Product entity not found for id: {}", id);
@@ -154,13 +184,16 @@ public class ProductServiceImpl implements ProductService {
 
     private String generateUniqueSlug(String input) {
 
-        String uniqueSlug = createSlug(input);
+        String baseSlug = createSlug(input);
+        String uniqueSlug = baseSlug;
         int counter = 1;
+
         while (productRepository.existsBySlug(uniqueSlug)) {
-            uniqueSlug = input + "-" + counter;
+            uniqueSlug = baseSlug + "-" + counter;
             counter++;
         }
 
         return uniqueSlug;
     }
+
 }

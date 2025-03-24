@@ -17,4 +17,11 @@ public class ProductImageEntity extends BaseEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public ProductEntity getProduct() {
+        return product;
+    }
 }

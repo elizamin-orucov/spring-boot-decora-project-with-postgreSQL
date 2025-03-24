@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 public class ProductListDto extends BaseIdDto {
     private String title;
+    private String slug;
     private ProductCategoryListDto category;
     private Double price;
     private String discountRate;

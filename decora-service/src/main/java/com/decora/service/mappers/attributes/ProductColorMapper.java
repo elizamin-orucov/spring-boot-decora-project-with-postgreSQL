@@ -19,8 +19,8 @@ public interface ProductColorMapper {
     ProductColorDto toDto(ProductColorEntity entity);
 
     // to Entity
-//    @Mapping(source = "colorName", target = "colorName")
-//    @Mapping(source = "colorCode", target = "colorCode")
+    @Mapping(source = "colorName", target = "colorName")
+    @Mapping(source = "colorCode", target = "colorCode")
     ProductColorEntity toEntity(ProductColorCreateDto dto);
 
     ProductColorEntity toEntity(ProductColorUpdateDto dto);

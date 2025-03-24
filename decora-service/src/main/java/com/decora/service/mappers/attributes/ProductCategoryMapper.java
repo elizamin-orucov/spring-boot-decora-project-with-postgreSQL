@@ -20,7 +20,7 @@ public interface ProductCategoryMapper {
     ProductCategoryDto toDto(ProductCategoryEntity entity);
 
     // to Entity
-//    @Mapping(source = "categoryName", target = "categoryName")
+    @Mapping(source = "categoryName", target = "categoryName")
     ProductCategoryEntity toEntity(ProductCategoryCreateDto dto);
 
     ProductCategoryEntity toEntity(ProductCategoryUpdateDto dto);

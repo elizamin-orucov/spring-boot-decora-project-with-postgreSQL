@@ -11,4 +11,5 @@ public interface ProductService extends BaseCRUDService<
         ProductCreateDto,
         ProductUpdateDto
         >{
+    ProductDto detail(String slug);
 }

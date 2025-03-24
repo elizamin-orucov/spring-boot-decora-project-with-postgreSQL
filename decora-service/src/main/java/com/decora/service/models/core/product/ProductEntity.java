@@ -23,7 +23,7 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "product_description", nullable = true)
     private String description;
 
-    @Column(name = "product_slug", unique = true, nullable = true, updatable = false)
+    @Column(name = "product_slug", unique = true)
     private String slug;
 
     @Column(name = "product_price", nullable = true)
@@ -62,5 +62,4 @@ public class ProductEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status", nullable = true)
     private ProductStatus status;
-
 }
