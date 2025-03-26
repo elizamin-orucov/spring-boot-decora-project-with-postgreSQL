@@ -19,8 +19,10 @@ public interface ProductImageService {
     // destroy methods
     String deleteImage(String imageId);
 
+    ApiResponseDto<ProductImageListDto> deleteImage(Long imageId);
+
     default String deleteImages(List<String> imageIds){return null;}
 
     // read methods
-    byte[] readImage(String imagePath);
+    byte[] readImage(Long imageID);
 }

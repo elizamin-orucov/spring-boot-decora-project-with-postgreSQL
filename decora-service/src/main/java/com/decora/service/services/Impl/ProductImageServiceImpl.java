@@ -1,7 +1,11 @@
 package com.decora.service.services.Impl;
 
+import com.decora.service.dtos.product.ProductImageListDto;
+import com.decora.service.dtos.response.ApiResponseDto;
+import com.decora.service.mappers.core.ProductImageMapper;
 import com.decora.service.models.core.product.ProductEntity;
 import com.decora.service.models.core.product.ProductImageEntity;
+import com.decora.service.repositories.attributes.ProductImageRepository;
 import com.decora.service.repositories.core.ProductRepository;
 import com.decora.service.services.ProductImageService;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +20,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductImageServiceImpl implements ProductImageService {
@@ -23,9 +28,11 @@ public class ProductImageServiceImpl implements ProductImageService {
     private String UPLOAD_DIR;
 
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
-    public ProductImageServiceImpl(ProductRepository repository) {
+    public ProductImageServiceImpl(ProductRepository repository, ProductImageRepository productImageRepository) {
         this.productRepository = repository;
+        this.productImageRepository = productImageRepository;
     }
 
     @Override
@@ -84,7 +91,6 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    @Transactional
     public String deleteImage(String filePath) {
         try {
             Path path = Paths.get(filePath);
@@ -95,6 +101,35 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
     }
 
+//    @Transactional
+//    public String deleteImage(Long imageId) {
+//        ProductImageEntity imageEntity = getImageEntity(imageId);
+//        if (imageEntity != null && imageEntity.getImageUrl() != null) {
+//            deleteImage(imageEntity.getImageUrl());
+//            productImageRepository.delete(imageEntity);
+//        }
+//        return "file not found";
+//    }
+
+    @Override
+    @Transactional
+    public ApiResponseDto<ProductImageListDto> deleteImage(Long imageId) {
+        ProductImageEntity imageEntity = getImageEntity(imageId);
+        if (imageEntity != null && imageEntity.getImageUrl() != null){
+            ProductImageListDto imageListDto = ProductImageMapper.INSTANCE.toListDto(imageEntity);
+            deleteImage(imageEntity.getImageUrl());
+            productImageRepository.delete(imageEntity);
+            return ApiResponseDto.<ProductImageListDto>builder()
+                    .response(imageListDto)
+                    .message("delete image success")
+                    .build();
+        }
+        return ApiResponseDto.<ProductImageListDto>builder()
+                .message("not found image")
+                .response(null)
+                .build();
+    }
+
     @Override
     @Transactional
     public String deleteImages(List<String> imageIds) {
@@ -102,10 +137,11 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public byte[] readImage(String imagePath) {
+    public byte[] readImage(Long imageID) {
         try {
-            if (imagePath != null) {
-                return Files.readAllBytes(Paths.get(imagePath));
+            ProductImageEntity imageEntity = getImageEntity(imageID);
+            if (imageEntity != null && imageEntity.getImageUrl() != null) {
+                return Files.readAllBytes(Paths.get(imageEntity.getImageUrl()));
             }
             else {
                 return null;
@@ -113,5 +149,10 @@ public class ProductImageServiceImpl implements ProductImageService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ProductImageEntity getImageEntity(Long imageID){
+        Optional<ProductImageEntity> optionalProductImage = productImageRepository.findById(imageID);
+        return optionalProductImage.orElse(null);
     }
 }

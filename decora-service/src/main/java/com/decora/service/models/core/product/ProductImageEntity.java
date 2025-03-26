@@ -10,7 +10,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "product_image")
 public class ProductImageEntity extends BaseEntity {
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
