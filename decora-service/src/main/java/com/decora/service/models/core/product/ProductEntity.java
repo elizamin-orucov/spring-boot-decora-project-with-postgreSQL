@@ -17,23 +17,23 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 public class ProductEntity extends BaseEntity {
-    @Column(name = "product_title", nullable = true)
+    @Column(name = "product_title", nullable = false)
     private String title;
 
-    @Column(name = "product_description", nullable = true)
+    @Column(name = "product_description", nullable = false)
     private String description;
 
     @Column(name = "product_slug", unique = true)
     private String slug;
 
-    @Column(name = "product_price", nullable = true)
+    @Column(name = "product_price", nullable = false)
     private Double price;
 
-    @Column(name = "product_size", nullable = true)
+    @Column(name = "product_size", nullable = false)
     private String size;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = true)
+    @JoinColumn(name = "category_id", nullable = false)
     private ProductCategoryEntity category;
 
     @ManyToMany(
@@ -53,13 +53,13 @@ public class ProductEntity extends BaseEntity {
     private List<ProductImageEntity> images;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "discount_rate", nullable = true)
+    @Column(name = "discount_rate", nullable = false)
     private DiscountRateEnum discountRate;
 
-    @Column(name = "collection", nullable = true)
+    @Column(name = "collection", nullable = false)
     private Integer collection;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "product_status", nullable = true)
+    @Column(name = "product_status", nullable = false)
     private ProductStatus status;
 }

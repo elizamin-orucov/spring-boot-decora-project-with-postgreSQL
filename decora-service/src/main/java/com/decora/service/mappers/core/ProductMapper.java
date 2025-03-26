@@ -1,9 +1,6 @@
 package com.decora.service.mappers.core;
 
-import com.decora.service.dtos.product.ProductCreateDto;
-import com.decora.service.dtos.product.ProductDto;
-import com.decora.service.dtos.product.ProductListDto;
-import com.decora.service.dtos.product.ProductUpdateDto;
+import com.decora.service.dtos.product.*;
 import com.decora.service.models.core.product.ProductEntity;
 import com.decora.service.models.core.product.ProductImageEntity;
 import com.decora.service.models.enums.DiscountRateEnum;
@@ -18,22 +15,25 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     // to Dto
-    @Mapping(source = "images", target = "imageUrl", qualifiedByName = "mapFirstImageUrl")
+    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstImage")
     ProductListDto toListDto(ProductEntity entity);
 
     ProductDto toDto(ProductEntity entity);
 
-    // Create üçün istifadə et
+    // for create
     ProductEntity toEntity(ProductCreateDto dto);
 
-    // Update üçün mövcud entity-ə map et
+    // for update
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(ProductUpdateDto dto, @MappingTarget ProductEntity entity);
 
-    @Named("mapFirstImageUrl")
-    default String mapFirstImageUrl(List<ProductImageEntity> images) {
+    @Named("mapFirstImage")
+    default ProductImageListDto mapFirstImageUrl(List<ProductImageEntity> images) {
         if (images != null && !images.isEmpty()) {
-            return images.get(0).getImageUrl();
+            ProductImageListDto imageListDto = new ProductImageListDto();
+            imageListDto.setId(images.get(0).getId());
+            imageListDto.setImageUrl(images.get(0).getImageUrl());
+            return imageListDto;
         }
         return null;
     }

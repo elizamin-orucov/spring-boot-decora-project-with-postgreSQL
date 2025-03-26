@@ -14,5 +14,5 @@ public class ProductListDto extends BaseIdDto {
     private Double price;
     private String discountRate;
     private String status;
-    private String imageUrl;
+    private ProductImageListDto image;
 }

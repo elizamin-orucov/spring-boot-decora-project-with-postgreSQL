@@ -58,7 +58,7 @@ public class ProductController implements BaseController<
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponseDto<ProductDto>> create(
             @ModelAttribute ProductCreateDto product,
             @RequestParam("images") MultipartFile[] images
