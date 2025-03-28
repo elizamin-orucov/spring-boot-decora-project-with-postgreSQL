@@ -60,7 +60,7 @@ public class ProductCategoryController implements BaseController<
     }
 
     @Override
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<ApiResponseDto<ProductCategoryUpdateDto>> update(
             @RequestBody ProductCategoryUpdateDto productCategoryUpdateDto
     ) {

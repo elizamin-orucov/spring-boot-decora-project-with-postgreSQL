@@ -12,7 +12,7 @@ public interface RoomMapper {
     RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
 
     // to Dto
-    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstImage")
+//    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstImage")
     RoomListDto toListDto(RoomEntity entity);
 
     RoomDto toDto(RoomEntity entity);

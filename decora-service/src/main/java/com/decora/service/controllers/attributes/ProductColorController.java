@@ -57,7 +57,7 @@ public class ProductColorController implements BaseController<
     }
 
     @Override
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<ApiResponseDto<ProductColorUpdateDto>> update(
             @RequestBody ProductColorUpdateDto productColorUpdateDto
     ) {
