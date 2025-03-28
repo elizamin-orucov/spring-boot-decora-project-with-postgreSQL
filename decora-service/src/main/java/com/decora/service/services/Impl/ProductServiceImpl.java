@@ -16,7 +16,10 @@ import com.decora.service.services.ProductImageService;
 import com.decora.service.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,6 +55,19 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductListDto> list(Pageable pageable) {
         Page<ProductEntity> entities = productRepository.findAll(pageable);
         return entities.map(ProductMapper.INSTANCE::toListDto);
+    }
+
+    public Page<ProductListDto> list(
+            Pageable pageable, Long categoryId, List<Long> colorIds, String title, Double minPrice, Double maxPrice, String sortBy, String sortDirection) {
+        Specification<ProductEntity> spec = Specification.where(ProductSpecification.hasCategory(categoryId))
+                .and(ProductSpecification.hasColorIds(colorIds))
+                .and(ProductSpecification.hasTitle(title))
+                .and(ProductSpecification.priceBetween(minPrice, maxPrice));
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        return productRepository.findAll(spec, pageable).map(productMapper::toListDto);
     }
 
     @Override
@@ -118,20 +134,10 @@ public class ProductServiceImpl implements ProductService {
 
         productMapper.updateEntityFromDto(productUpdateDto, existingProduct);
 
-        System.out.println("----------- set slug -----------------");
-        System.out.println(existingProduct.getSlug());
         existingProduct.setSlug(generateUniqueSlug(productUpdateDto.getTitle()));
-        System.out.println(generateUniqueSlug(productUpdateDto.getTitle()));
-        System.out.println("++++++++++++++++++++++++++++++");
-        System.out.println(existingProduct.getSlug());
-        System.out.println("----------- set slug -----------------");
 
         productRepository.save(existingProduct);
 
-
-
-//        ProductEntity entity = ProductMapper.INSTANCE.toEntity(productUpdateDto);
-//        productRepository.save(entity);
         return ApiResponseDto.<ProductUpdateDto>builder()
                 .success(true)
                 .message("updated product")
@@ -163,9 +169,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductEntity getProductEntity(Long id){
-        System.out.println("get product isleyir qaqa + id " + id);
         log.debug("Fetching product entity for id: {}", id);
-        System.out.println(id);
         Optional<ProductEntity> entityOptional = productRepository.findById(id);
         if (entityOptional.isEmpty()){
             log.warn("Product entity not found for id: {}", id);

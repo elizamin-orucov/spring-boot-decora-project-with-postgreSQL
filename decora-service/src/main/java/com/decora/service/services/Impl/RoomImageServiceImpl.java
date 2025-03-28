@@ -1,13 +1,13 @@
 package com.decora.service.services.Impl;
 
-import com.decora.service.dtos.product.ProductImageListDto;
 import com.decora.service.dtos.response.ApiResponseDto;
-import com.decora.service.mappers.core.ProductImageMapper;
-import com.decora.service.models.core.product.ProductEntity;
-import com.decora.service.models.core.product.ProductImageEntity;
-import com.decora.service.repositories.attributes.ProductImageRepository;
-import com.decora.service.repositories.core.ProductRepository;
-import com.decora.service.services.ProductImageService;
+import com.decora.service.dtos.room.RoomImageListDto;
+import com.decora.service.mappers.core.RoomImageMapper;
+import com.decora.service.models.core.rooms.RoomEntity;
+import com.decora.service.models.core.rooms.RoomImageEntity;
+import com.decora.service.repositories.attributes.RoomImageRepository;
+import com.decora.service.repositories.core.RoomRepository;
+import com.decora.service.services.RoomImageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,32 +23,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductImageServiceImpl implements ProductImageService {
-    @Value("${baseProductImageFolder}")
+public class RoomImageServiceImpl implements RoomImageService {
+    @Value("${baseRoomImageFolder}")
     private String UPLOAD_DIR;
 
-    private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
+    private final RoomRepository roomRepository;
+    private final RoomImageRepository imageRepository;
 
-    public ProductImageServiceImpl(ProductRepository repository, ProductImageRepository productImageRepository) {
-        this.productRepository = repository;
-        this.productImageRepository = productImageRepository;
+    public RoomImageServiceImpl(RoomRepository roomRepository, RoomImageRepository imageRepository) {
+        this.roomRepository = roomRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
     @Transactional
-    public String saveImage(ProductEntity productEntity, MultipartFile image) {
+    public String saveImage(RoomEntity entity, MultipartFile image) throws IOException {
         try {
             byte[] bytes = image.getBytes();
 
-            Path path = Paths.get(UPLOAD_DIR + productEntity.getId() + "/" + image.getOriginalFilename());
+            Path path = Paths.get(UPLOAD_DIR + entity.getId() + "/" + image.getOriginalFilename());
             Files.createDirectories(path.getParent());
 
             Files.write(path, bytes);
 
-            ProductImageEntity imageEntity = new ProductImageEntity();
+            RoomImageEntity imageEntity = new RoomImageEntity();
 
-            imageEntity.setProduct(productEntity);
+            imageEntity.setRoom(entity);
             imageEntity.setImageUrl(path.toString().replace("\\", "/"));
 
             return "image saved success";
@@ -59,29 +59,29 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     @Transactional
-    public String saveImages(ProductEntity productEntity, MultipartFile[] images) {
+    public String saveImages(RoomEntity entity, MultipartFile[] images) {
         UPLOAD_DIR = UPLOAD_DIR  + LocalDate.now() + "/";
         try {
-            List<ProductImageEntity> imageEntityList = new ArrayList<>();
+            List<RoomImageEntity> imageEntityList = new ArrayList<>();
             if (images != null) {
                 for (MultipartFile file: images) {
 
                     byte[] bytes = file.getBytes();
 
-                    Path path = Paths.get(UPLOAD_DIR + productEntity.getId() + "/" + file.getOriginalFilename());
+                    Path path = Paths.get(UPLOAD_DIR + entity.getId() + "/" + file.getOriginalFilename());
                     Files.createDirectories(path.getParent());
 
                     Files.write(path, bytes);
 
-                    ProductImageEntity imageEntity = new ProductImageEntity();
+                    RoomImageEntity imageEntity = new RoomImageEntity();
 
-                    imageEntity.setProduct(productEntity);
+                    imageEntity.setRoom(entity);
                     imageEntity.setImageUrl(path.toString().replace("\\", "/"));
 
                     imageEntityList.add(imageEntity);
                 }
-                productEntity.setImages(imageEntityList);
-                productRepository.save(productEntity);
+                entity.setImages(imageEntityList);
+                roomRepository.save(entity);
             }
             return "image saved success";
 
@@ -103,33 +103,27 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     @Transactional
-    public ApiResponseDto<ProductImageListDto> deleteImage(Long imageId) {
-        ProductImageEntity imageEntity = getImageEntity(imageId);
+    public ApiResponseDto<RoomImageListDto> deleteImage(Long imageId) {
+        RoomImageEntity imageEntity = getImageEntity(imageId);
         if (imageEntity != null && imageEntity.getImageUrl() != null){
-            ProductImageListDto imageListDto = ProductImageMapper.INSTANCE.toListDto(imageEntity);
+            RoomImageListDto imageListDto = RoomImageMapper.INSTANCE.toListDto(imageEntity);
             deleteImage(imageEntity.getImageUrl());
-            productImageRepository.delete(imageEntity);
-            return ApiResponseDto.<ProductImageListDto>builder()
+            imageRepository.delete(imageEntity);
+            return ApiResponseDto.<RoomImageListDto>builder()
                     .response(imageListDto)
                     .message("delete image success")
                     .build();
         }
-        return ApiResponseDto.<ProductImageListDto>builder()
+        return ApiResponseDto.<RoomImageListDto>builder()
                 .message("not found image")
                 .response(null)
                 .build();
     }
 
     @Override
-    @Transactional
-    public String deleteImages(List<String> imageIds) {
-        return ProductImageService.super.deleteImages(imageIds);
-    }
-
-    @Override
     public byte[] readImage(Long imageID) {
         try {
-            ProductImageEntity imageEntity = getImageEntity(imageID);
+            RoomImageEntity imageEntity = getImageEntity(imageID);
             if (imageEntity != null && imageEntity.getImageUrl() != null) {
                 return Files.readAllBytes(Paths.get(imageEntity.getImageUrl()));
             }
@@ -141,8 +135,8 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
     }
 
-    private ProductImageEntity getImageEntity(Long imageID){
-        Optional<ProductImageEntity> optionalProductImage = productImageRepository.findById(imageID);
-        return optionalProductImage.orElse(null);
+    private RoomImageEntity getImageEntity(Long imageID){
+        Optional<RoomImageEntity> optionalRoomImage = imageRepository.findById(imageID);
+        return optionalRoomImage.orElse(null);
     }
 }

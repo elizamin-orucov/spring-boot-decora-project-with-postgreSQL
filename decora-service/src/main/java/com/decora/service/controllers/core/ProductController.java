@@ -32,7 +32,6 @@ public class ProductController implements BaseController<
     }
 
     @Override
-    @GetMapping
     public ResponseEntity<Page<ProductListDto>> fetchAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
@@ -40,6 +39,27 @@ public class ProductController implements BaseController<
         page = Math.abs(page);
         size = Math.abs(size);
         Page<ProductListDto> productListDtos = productService.list(PageRequest.of(page - 1, size));
+        return ResponseEntity.ok(productListDtos);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductListDto>> fetchAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) List<Long> colorIds,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        page = Math.abs(page);
+        size = Math.abs(size);
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<ProductListDto> productListDtos = productService.list(pageable, categoryId, colorIds, title, minPrice, maxPrice, sortBy, sortDirection);
+
         return ResponseEntity.ok(productListDtos);
     }
 
