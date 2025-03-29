@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 public class RoomListDto extends BaseIdDto {
     private String title;
+    private String slug;
     private RoomCategoryListDto category;
     private RoomImageListDto image;
 }

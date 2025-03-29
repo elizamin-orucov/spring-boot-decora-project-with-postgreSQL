@@ -3,7 +3,6 @@ package com.decora.service.mappers.core;
 import com.decora.service.dtos.product.*;
 import com.decora.service.models.core.product.ProductEntity;
 import com.decora.service.models.core.product.ProductImageEntity;
-import com.decora.service.models.enums.DiscountRateEnum;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -15,7 +14,7 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     // to Dto
-    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstImage")
+    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstProductImageUrl")
     ProductListDto toListDto(ProductEntity entity);
 
     ProductDto toDto(ProductEntity entity);
@@ -27,8 +26,8 @@ public interface ProductMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(ProductUpdateDto dto, @MappingTarget ProductEntity entity);
 
-    @Named("mapFirstImage")
-    default ProductImageListDto mapFirstImageUrl(List<ProductImageEntity> images) {
+    @Named("mapFirstProductImageUrl")
+    default ProductImageListDto mapFirstProductImageUrl(List<ProductImageEntity> images) {
         if (images != null && !images.isEmpty()) {
             ProductImageListDto imageListDto = new ProductImageListDto();
             imageListDto.setId(images.get(0).getId());

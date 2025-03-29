@@ -2,6 +2,7 @@ package com.decora.service.mappers.core;
 
 import com.decora.service.dtos.room.*;
 import com.decora.service.models.core.rooms.RoomEntity;
+import com.decora.service.models.core.rooms.RoomImageEntity;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -9,10 +10,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface RoomMapper {
+
     RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
 
     // to Dto
-//    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstImage")
+    @Mapping(source = "images", target = "image", qualifiedByName = "mapFirstRoomImage")
     RoomListDto toListDto(RoomEntity entity);
 
     RoomDto toDto(RoomEntity entity);
@@ -25,12 +27,12 @@ public interface RoomMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(RoomUpdateDto dto, @MappingTarget RoomEntity entity);
 
-    @Named("mapFirstImage")
-    default RoomImageListDto mapFirstImageUrl(List<RoomImageListDto> images) {
-        if (images != null && !images.isEmpty()) {
+    @Named("mapFirstRoomImage")
+    default RoomImageListDto mapFirstRoomImageUrl(List<RoomImageEntity> roomImages) {
+        if (roomImages != null && !roomImages.isEmpty()) {
             RoomImageListDto imageListDto = new RoomImageListDto();
-            imageListDto.setId(images.get(0).getId());
-            imageListDto.setImageUrl(images.get(0).getImageUrl());
+            imageListDto.setId(roomImages.get(0).getId());
+            imageListDto.setImageUrl(roomImages.get(0).getImageUrl());
             return imageListDto;
         }
         return null;

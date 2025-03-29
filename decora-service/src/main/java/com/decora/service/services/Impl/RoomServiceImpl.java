@@ -7,8 +7,10 @@ import com.decora.service.dtos.room.RoomListDto;
 import com.decora.service.dtos.room.RoomUpdateDto;
 import com.decora.service.mappers.core.RoomMapper;
 import com.decora.service.models.attributes.RoomCategoryEntity;
+import com.decora.service.models.core.product.ProductEntity;
 import com.decora.service.models.core.rooms.RoomEntity;
 import com.decora.service.repositories.attributes.RoomCategoryRepository;
+import com.decora.service.repositories.core.ProductRepository;
 import com.decora.service.repositories.core.RoomRepository;
 import com.decora.service.services.RoomImageService;
 import com.decora.service.services.RoomService;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.decora.service.services.Impl.CreateSlugService.createSlug;
@@ -29,11 +32,13 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RoomCategoryRepository categoryRepository;
     private final RoomImageService imageService;
+    private final ProductRepository productRepository;
 
-    public RoomServiceImpl(RoomRepository roomRepository, RoomCategoryRepository categoryRepository, RoomImageService imageService) {
+    public RoomServiceImpl(RoomRepository roomRepository, RoomCategoryRepository categoryRepository, RoomImageService imageService, ProductRepository productRepository) {
         this.roomRepository = roomRepository;
         this.categoryRepository = categoryRepository;
         this.imageService = imageService;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -80,9 +85,12 @@ public class RoomServiceImpl implements RoomService {
         RoomEntity entity = RoomMapper.INSTANCE.toEntity(roomCreateDto);
 
         entity.setSlug(generateUniqueSlug(roomCreateDto.getTitle()));
+
         RoomCategoryEntity roomCategoryEntity = categoryRepository.findById(roomCreateDto.getCategoryID()).orElse(null);
+        List<ProductEntity> productEntities = productRepository.findByIdIn(roomCreateDto.getProductIDS());
 
         entity.setCategory(roomCategoryEntity);
+        entity.setProducts(productEntities);
 
         RoomEntity savedEntity = roomRepository.save(entity);
 
